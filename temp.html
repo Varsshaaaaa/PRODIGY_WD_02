@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fdribbble.com%2Fshots%2F15603930-Mother-Playing-with-her-Kids-in-Calming-BG&psig=AOvVaw2kOOfbmd4QfxlREmGsu4XY&ust=1708235670113000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOiH8_XXsYQDFQAAAAAdAAAAABAJ');
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  #container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  #stopwatch {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  #controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  #lapTimes {
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  #lapTimes div {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+
+  #lapTimes div:hover {
+    transform: translateY(-2px);
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <div id="stopwatch">00:00:00</div>
+  <div id="controls">
+    <button onclick="startStop()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="lap()">Lap</button>
+  </div>
+  <div id="lapTimes"></div>
+</div>
+<script>
+  let timerInterval;
+  let startTime;
+  let elapsedTime = 0;
+  let laps = [];
+
+  function startStop() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    } else {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTime, 10);
+    }
+  }
+
+  function updateTime() {
+    const currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    displayTime(elapsedTime);
+  }
+
+  function displayTime(time) {
+    const formattedTime = new Date(time).toISOString().substr(11, 8);
+    document.getElementById('stopwatch').innerText = formattedTime;
+  }
+
+  function pause() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function reset() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    elapsedTime = 0;
+    displayTime(elapsedTime);
+    laps = [];
+    document.getElementById('lapTimes').innerHTML = '';
+  }
+
+  function lap() {
+    laps.push(elapsedTime);
+    const lapIndex = laps.length;
+    const lapTime = new Date(laps[lapIndex - 1]).toISOString().substr(11, 8);
+    const lapItem = document.createElement('div');
+    lapItem.textContent = `Lap ${lapIndex}: ${lapTime}`;
+    document.getElementById('lapTimes').appendChild(lapItem);
+  }
+</script>
+</body>
+</html>
